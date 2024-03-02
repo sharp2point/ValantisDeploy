@@ -624,10 +624,12 @@ async function getProductData(options) {
         offset: options.offset,
         limit: options.limit
     }));
-    const products = await (0, _api.getDataFromApi)((0, _apiCommands.APICOMMANDS).getItems({
-        ids: ids.result
-    }));
-    return Promise.resolve(products.result);
+    if (ids.result) {
+        const products = await (0, _api.getDataFromApi)((0, _apiCommands.APICOMMANDS).getItems({
+            ids: ids.result
+        }));
+        return Promise.resolve(products.result);
+    } else return Promise.reject();
 }
 function fillPage(products, pageManager) {
     let page = pageManager.pageRemaind();
@@ -651,11 +653,10 @@ function uploadData() {
     }).then(()=>{
         (0, _appstate.APPSTATE).loader.show(false);
     }).catch((err)=>{
-        console.error("Product Request Error: ", err);
-    // setTimeout(() => {
-    //     console.log("Product Request Repeat")
-    //     uploadData();
-    // }, 1000);
+        setTimeout(()=>{
+            console.log("Product Request Repeat");
+            uploadData();
+        }, 1000);
     });
 }
 function startAppData() {
@@ -669,11 +670,10 @@ function startAppData() {
         (0, _appstate.APPSTATE).loader.show(false);
         return (0, _utils.appendPageToDocument)(pageManager.getFirstPage());
     }).catch((err)=>{
-        console.error("Get Product Error: ", err);
-    // setTimeout(() => {
-    //     console.log("Filter Request Repeat")
-    //     startAppData();
-    // }, 1000);
+        setTimeout(()=>{
+            console.log("Filter Request Repeat");
+            startAppData();
+        }, 1000);
     });
 }
 //Filter---------------
@@ -698,11 +698,10 @@ async function queryFilter(query) {
         }).then(()=>{
             (0, _appstate.APPSTATE).filter.classList.toggle("open-filter");
         }).catch((err)=>{
-            console.error("Filter Request Error: ", err);
-        // setTimeout(() => {
-        //     console.log("Filter Request Repeat")
-        //     queryFilter(query);
-        // }, 1000);
+            setTimeout(()=>{
+                console.log("Filter Request Repeat");
+                queryFilter(query);
+            }, 1000);
         });
     }
 }
